@@ -521,17 +521,17 @@ public class Connection
 
 		CharArrayWriter cw = new CharArrayWriter();
 
-		FileReader fr = new FileReader(pemFile);
+		try (FileReader fr = new FileReader(pemFile)) {
 
-		while (true)
-		{
-			int len = fr.read(buff);
-			if (len < 0)
-				break;
-			cw.write(buff, 0, len);
+			while (true)
+			{
+				int len = fr.read(buff);
+				if (len < 0)
+					break;
+				cw.write(buff, 0, len);
+			}
+
 		}
-
-		fr.close();
 
 		return authenticateWithPublicKey(user, cw.toCharArray(), password);
 	}

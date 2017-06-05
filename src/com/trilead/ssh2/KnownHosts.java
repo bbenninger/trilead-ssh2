@@ -628,7 +628,7 @@ public class KnownHosts
 			throw new IllegalArgumentException();
 
 		CharArrayWriter writer = new CharArrayWriter();
-		
+
 		for (int i = 0; i < hostnames.length; i++)
 		{
 			if (i != 0)
@@ -643,21 +643,22 @@ public class KnownHosts
 		writer.write("\n");
 
 		char[] entry = writer.toCharArray();
-		
-		RandomAccessFile raf = new RandomAccessFile(knownHosts, "rw");
 
-		long len = raf.length();
-		
-		if (len > 0)
-		{
-			raf.seek(len - 1);
-			int last = raf.read();
-			if (last != '\n')
-				raf.write('\n');
+		try (RandomAccessFile raf = new RandomAccessFile(knownHosts, "rw")) {
+
+			long len = raf.length();
+
+			if (len > 0)
+			{
+				raf.seek(len - 1);
+				int last = raf.read();
+				if (last != '\n')
+					raf.write('\n');
+			}
+
+			raf.write(new String(entry).getBytes("ISO-8859-1"));
+
 		}
-		
-		raf.write(new String(entry).getBytes("ISO-8859-1"));
-		raf.close();
 	}
 
 	/**
